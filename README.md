@@ -1,52 +1,28 @@
-# 은행 창구 매니저 프로젝트
+# 💸 은행 창구 매니저 프로젝트
 
-1. 프로젝트 기간: 2021.12.20 - 2021.12.31
-2. Grounds Rules
-    - 시간
-        - 시작시간 10시
-        - 점심시간 12시~2시
-        - 저녁시간 6시~7시 사이부터 2시간
-    - 진행 계획
-        - 프로젝트가 중심이 아닌 학습과 이유에 초점을 맞추기
-        - 의문점을 그냥 넘어가지 않기
-    - 스크럼
-        - 10시에 스크럼 시작
-3. 커밋 규칙
-    - 단위
-        - 기능 단위
-    - 메세지
-        - 카르마 스타일
+* 팀 프로젝트(2인)
+* 프로젝트 기간: 2021.12.20 ~ 2021.12.31
 
 # 목차
 
 - [키워드](#키워드)
-- [STEP 1 : 큐 타입 구현](#STEP-1--큐-타입-구현)
-    + [고민했던 것](#1-1-고민했던-것)
-    + [의문점](#1-2-의문점)
-    + [Trouble Shooting](#1-3-Trouble-Shooting)
-    + [배운 개념](#1-4-배운-개념)
-    + [PR 후 개선사항](#1-5-PR-후-개선사항)
-- [STEP 2 : 타입 구현 및 콘솔앱 구현](#STEP-2--타입-구현-및-콘솔앱-구현)
-    + [고민했던 것](#2-1-고민했던-것)
-    + [의문점](#2-2-의문점)
-    + [Trouble Shooting](#2-3-Trouble-Shooting)
-    + [배운 개념](#2-4-배운-개념)
-    + [PR 후 개선사항](#2-5-PR-후-개선사항)
-- [STEP 3 : 다중 처리](#STEP-3--다중-처리)
-    + [고민했던 것](#3-1-고민했던-것)
-    + [의문점](#3-2-의문점)
-    + [Trouble Shooting](#3-3-Trouble-Shooting)
-    + [배운 개념](#3-4-배운-개념)
-- [STEP 4 : UI 구현](#STEP-4--UI-구현)
-    + [고민했던 것](#4-1-고민했던-것)
-    + [의문점](#4-2-의문점)
-    + [Trouble Shooting](#4-3-Trouble-Shooting)
-    + [배운 개념](#4-4-배운-개념)
-    + [PR 후 개선사항](#4-5-PR-후-개선사항)
+- [프로젝트 소개](#%EF%B8%8F-프로젝트-소개)
+- [프로젝트 주요기능](#-프로젝트-주요기능)
+- [Trouble Shooting](#-trouble-shooting)
+    + ["참조타입을 활용한 연결리스트"](#참조타입을-활용한-연결리스트)
+    + ["와일드카드 패턴으로 생성한 인스턴스의 참조 카운트 상태는?"](#와일드카드-패턴으로-생성한-인스턴스의-참조-카운트-상태는)
+    + ["지레짐작하여 설계하지 말기"](#지레짐작하여-설계하지-말기)
+    + ["Thread Safe하게 코드짜보기"](#thread-safe하게-코드짜보기)
+    + ["뷰의 요소를 비동기적으로 업데이트 하기"](#뷰의-요소를-비동기적으로-업데이트-하기)
+    + ["멈추지 않는 타이머"](#멈추지-않는-타이머)
+- [새롭게 알게된 것](#-새롭게-알게된-것)
+    + ["코드에서 경쟁 상태를 확인하는 방법"](#코드에서-경쟁-상태를-확인하는-방법)
+    + ["Core Foundation vs Foundation"](#core-foundation-vs-foundation)
+    + ["구조체 프로퍼티는 클로저 내부에서 왜 값을 변경할 수 없는가?"](#구조체-프로퍼티는-클로저-내부에서-왜-값을-변경할-수-없는가)
+    + ["DispatchQueue는 중간에 작업을 중지시킬 수 있을까?"](#dispatchqueue는-중간에-작업을-중지시킬-수-있을까)
 
 # 키워드
 
-- `struct` `class`
 - `Queue`
     - `LinkedList`
 - `Generic`
@@ -67,6 +43,256 @@
 - `Timer` `RunLoop`
 - `Custom View`
 - `Auto Layout`
+
+</br>
+
+## ⭐️ 프로젝트 소개
+
+은행 창구 업무 스케줄을 관리하는 기능을 동시성 프로그래밍을 활용하여 구현한 앱이에요. 🏦
+
+손님이 입장한 순서대로 대기표를 나눠주고, 두개의 창구에서 맡은 업무를 **동시에 순서대로** 처리해요 ! 💪🏻
+
+</br>
+
+## ✨ 프로젝트 주요기능
+
+> ### 👩🏻‍💻 고객 추가버튼을 누르면 업무를 대기순서대로 시작하고, 모든 업무를 마치면 업무시간 타이머가 일시정지해요.
+
+<img src="https://i.imgur.com/1kzy1SC.gif" width=30%>
+
+> ### 🏃🏻‍♀️ 업무중에도 고객을 더 추가할 수도 있어요.
+
+<img src="https://i.imgur.com/pSgdvCq.gif" width=30%>
+
+> ### ❌ 초기화 버튼을 누르면, 하던 업무를 중지하고 은행 업무를 종료해요.
+
+<img src="https://i.imgur.com/tlTWuH3.gif" width=30%> 
+ 
+</br>
+
+## 🛠 Trouble Shooting
+
+### "참조타입을 활용한 연결리스트"
+
+- `상황` append를 할때 연결된 리스트들의 가장 마지막 부분에 새로운 데이터를 넣어줘야하는데, 요소를 탐색하기 위해 반복적으로 포인터를 추적하는 작업을 해야하는 점을 깔끔하게 해결해보고 싶었다.
+- `이유` Queue를 위한 LinkedList인 점도 있고, 또 각 요소를 탐색하기 위해 반복적으로 포인터를 추적하게 된다면 시간복잡도가 O(n)이기 때문에 데이터 접근 방식이 매우 비효율적인 점을 해결하고 싶었다.
+- `해결`  클래스의 참조를 활용하여 연결리스트를 연결하도록 구현하였다.
+    
+    ```swift
+    func append(_ value: Element) {
+        let newNode = Node(value: value)
+            
+        if isEmpty {
+            head = newNode
+            tail = newNode
+        } else {
+            tail?.next = newNode
+            tail = newNode
+        }
+    }
+    ```
+<img src="https://i.imgur.com/C3uId1Z.png" width=80%>
+
+#
+
+### "와일드카드 패턴으로 생성한 인스턴스의 참조 카운트 상태는?"
+
+- `상황` 기존에 와일드카드 패턴으로 인스턴스 생성한 타입이 Delegate를 채택하고 있던 형태였다. 이후 순환참조 문제가 우려되어 각 타입들마다 delegate 프로퍼티에 weak 키워드를 붙여주었다. 
+- `이유` 그런데 weak 키워드를 붙여주니 해당 타입에서 출력해주었던 메소드가 실행되지 않았다. init과 deinit을 통해 디버깅을 해보니 와일드카드 패턴으로 생성한 인스턴스가 생성과 동시에 해제되는 것을 확인할 수 있었다. `와일드카드 패턴`은 **값을 해체하거나 무시하는 패턴**중 하나이므로 `weak 키워드`가 추가됨과 동시에 retain count가 올라가지 않기 때문에 생성과 동시에 해제되는 것이였다.
+- `해결` 사용하지 않는 viewController(은행원, 은행)를 상수에 담으면 xcode에서 경고 메세지가 발생한다. 그럼에도 불구하고 와일드 카드 패턴을 사용해서 순환참조 문제를 해결할 수 있다고 판단되어 weak 키워드를 제거하고 와일드카드 패턴을 사용하기로 결정했다.
+    
+    ```swift
+    final class Bank {
+        private let bankClerk: BankClerk
+        private var customerQueue = Queue<Customer>()
+        var delegate: BankDelegate? // weak 키워드 제거
+    ...
+    }
+    
+    func run() {
+        let bankClerk = BankClerk()
+        let bank = Bank(bankClerk: bankClerk)
+        let bankManager = BankManager(bank: bank)
+        let _ = BankClerkViewController(bankClerk: bankClerk)
+        let _ = BankViewController(bank: bank) 
+    ...
+    }
+    ```
+
+#
+
+### "지레짐작하여 설계하지 말기"
+
+<img src="https://i.imgur.com/RFm5zea.png" width=60%>
+
+* `상황`
+    * 팀원인 허황과 나는 콘솔앱 다음 스텝에 있을 ViewController를 추가하는 작업까지 추측하여 미리 콘솔앱을 구현할 때부터 Delegate 패턴까지 고려하여 설계를 하였다. (위 사진은 당시 작성했던 UML이다.)
+    * 리뷰어에게 코드리뷰를 받고 다시 살펴보며 고민해본 결과, 콘솔앱에서 불필요한 역할 분리가 일어나서 오히려 코드 가독성이 매우 떨어졌다.
+    
+    <img src="https://i.imgur.com/Jxv8sVw.png" width=60%>
+    
+* `이유`
+    * 당장 만들어야할 기능이 아니라 추후 추가될 기능까지 추측하여 설계한 탓이 큰 문제점인 것 같다.
+* `해결`
+    * 따라서 다음 기능이 어떻게 추가될 지 알 수 없는 상태에서는 최소한의 기능만 빠르게 작업해버릇하는 습관을 들여야겠다는 생각이 들었고, 나중에 기능 요구사항이 추가된다면, 거기에 맞게 다시 설계를 해야겠다는 생각이 들었다.
+    * 추측하여 설계한 부분을 다 [수정](https://github.com/leeari95/ios-bank-manager/commit/f390adfb033eca8bc2a013188d2d63356d50d6be)하였다. 추후 기능 요구사항이 나온다면, 그때 다시 설계해보기로 하였다.
+* `느낀점`
+    * 다음 스텝을 지레짐작해서 개발하지 말자
+    * 그냥 요구사항에 맞춰 최소한의 기능을 빨리 만들어보자.
+    * 시도하고 실패하고 돌아가는 과정을 반복하며 개선해나가는 방향으로 진행하자.
+
+# 
+
+### "Thread Safe하게 코드짜보기"
+
+* `상황`
+    - 은행원의 수만큼 DispatchQueue를 만들어주고 있고, 그 안에서 dequeue를 하기 위해 고객의 큐에 접근하고 있다.
+        - 여러 스레드에서 고객의 큐를 접근할 수 있는 가능성이 있다.
+        - 그러나 현재 우리 코드에서는 race condition없이 잘 작동한다. 이유가 무엇일까?
+* `이유`
+    ```
+    1. 일단 은행원의 수(DispatchQueue)가 적다. 3개뿐이다. 
+       따라서 스레드는 3개 이상 생기지 않는다.
+    2. 그리고 각 업무를 할때 스레드를 잠재운다. 딜레이가 있다.
+    3. 고객의 숫자도 적은편이다.
+    ```
+    - 따라서 결론은 현재 셋팅(`은행원 수`, `고객 수`, `딜레이`) 때문에 race condition이 발생하지 않는다는 판단이 들었다.
+    - 현재는 race condtion이 발생하지 않고 정상적으로 작동하지만, 결국에 `Queue`는 `Thread-Safe` 하지 않기 때문에, race condition이 발생하지 않을 것이라고도 장담할 수 없다는 결론이다.
+        - 따라서 DispatchSemaphore를 사용해서 접근할 수 있는 스레드의 수를 제한해주는 것이 안전할 것 같다는 생각이 들었다.
+        - 하지만 이 방법도 테스트 결과 `customers.dequeue` 작업들이 for문으로 인해 작업이 쌓여있고, 큐의 접근을 세마포어로 제한하고 있으니, 제한하는 동안 쌓인 작업들이 제한이 풀리고 실행되면 비어있는 큐에 접근할 수 있기 때문에 fatalError가 발생할 수 있다.
+* `해결`
+    - 현재 global()로 동시성큐를 사용하고 있는데, 이 부분을 Serial Queue로 만들어서 질서를 지키게 해주면 매우 안전할 것 같다. 👍
+        - 테스트 결과, race condition 발생 하지 않았다!!!!!
+* **개선된 코드**
+- ![](https://i.imgur.com/R2jT5ox.png)
+    * 멤버변수로 Serial Queue를 생성해주고 DispatchQueue.global() 대신 직접 생성해준 bankerQueue를 사용하도록 개선하였다.
+        * DispatchQueue가 지역변수가 아니라 멤버변수여야하는 이유는 뭘까?
+            * DispatchQueue에 비동기로 큐를 보내고 있는 부분이 for문에 의해 4번 불린다고 했을 때, 지역변수로 DispatchQueue가 4개, 즉 각각의 작업마다 생성될테니 실질적으로 동시에 접근하는 것을 막아주지 못할 것이다.
+            * 따라서 for문 내부에서 Queue를 생성하는 것이 아니라 바깥에서 생성해서, 그 해당 큐를 사용하는 방식으로 활용해야 한다.
+            * Semaphore를 활용할 때에도 위와 마찬가지로 멤버변수여야 한다!!!!
+
+#
+
+### "뷰의 요소를 비동기적으로 업데이트 하기"
+
+- `상황` UIButton에 View의 요소를 업데이트 하도록 기능을 추가하고 테스트 해보았으나, 버튼이 클릭됨가 동시에 화면이 멈추고 에러가 나면서 뷰가 업데이트 되지 않는 상황을 마주했다.
+
+<img src="https://i.imgur.com/0S10HBs.png" width=30%>
+
+- `이유` 비동기 프로그래밍시 뷰를 그리는 작업은 main thread에서 처리해주어야 하는데, 따로 처리해주지 않아서 해당 에러가 발생했던 것 같다.
+- `해결` 뷰를 그리는 작업을 main thread에서 처리하도록 DispatchQueue.main.async 클로저 구문안에 넣어주었다.
+
+#
+
+### "멈추지 않는 타이머"
+
+- `상황` 고객 추가버튼을 여러번 클릭하고 초기화를 누르게 되면 타이머가 멈추지 않았다.
+
+<img src="https://i.imgur.com/fvZWEq1.gif" width=30%>
+
+- `이유` 타이머가 추가버튼 클릭시 계속 추가되면서 추가된 타이머가 끝나지 않고 계속 실행되는 듯 했다.
+- `해결` 초기화 버튼을 클릭할 때, 대기중인 고객이 없을 때 타이머를 멈추면서 타이머에 nil을 대입해주었고, 타이머가 작동중에는 타이머를 추가하지 않도록 하는 로직을 추가해주니 해결되었다.
+
+<img src="https://i.imgur.com/VsvkGMM.gif" width=30%>
+
+
+</br>
+
+## 🔥 새롭게 알게된 것
+
+### "코드에서 경쟁 상태를 확인하는 방법"
+
+> 동시성 프로그래밍을 적용해보다가, 동시에 여러 스레드가 접근하는 일이 발생하고 있는지 디버깅 해보고 싶어서 알아보다가 알게되었다.
+
+* Xcode에서 ..
+    * `Product > scheme > editScheme > Run > Diagnostics > Thread Sanitizer`
+    * `Thread Sanitizer` 이걸 체크하면 빌드를 돌리고 나서 thread safe 하지 않은 상황이 발생할 수 있는 가능성을 엑스코드에서 체크해준다.
+    * 하지만 사용해보니 완벽하게 체크해주는 건 아닌 것 같다. 그냥 도와주는 기능이라고 생각하고 사용해야할 것 같다.
+
+![](https://i.imgur.com/aEg0Qbv.png)
+
+> Thread Safe하게 코드를 작성하려면?
+
+* 공유자원을 읽고 쓰는 작업을 Thread safe하게 Shemaphore를 사용해서 하나의 thread만 접근 할 수 있도록 하는 방법이 있다.
+    * 하지만 이 방법은 완벽하게 제어하기는 무리가 있다. 오히려 공유자원을 lock으로 처리하다가 교착 상황 발생할 가능성이 높다고 한다.
+* Serial Queue sync로 보내서 처리하는 방법도 있다.
+    * 그러면 들어온 task에 순서가 생기기 때문에 다수의 스레드에서 동시에 값을 접근하지 못하게 하는 상황이 된다.
+    * sync로 사용하는 이유는 Serial queue로 보낸 작업을 기다림으로써 공유자원의 제대로 된 값을 얻기 위함이다.
+
+#
+
+### "Core Foundation vs Foundation"
+
+> CFAbsoluteTime 타입 대신에 Date 타입을 활용하여 연산시간 측정하도록 수정하였다. Core Foundation 내장함수보다 Foundation에 있는 기능을 활용하는 것이 더 옳다고 판단되었다.
+
+* 코어 파운데이션에 있는 기능은 Foundation에서 래핑하여 구현되어져있다.
+* 보통 앱개발을 할 때에는 Foundation의 기능 없이 개발하기에는 어려움이 있기 때문에, Core Foundation에 내장되어있는 기능보다는 Foundation에 내장되어있는 기능을 사용하는 것을 선호하는 편이다.
+
+#
+
+### "구조체 프로퍼티는 클로저 내부에서 왜 값을 변경할 수 없는가?"
+
+- `상황` 프로젝트에서  `Bank 타입`은 `구조체`이고, `numberOfCustomers 프로퍼티`를 가지고 있다. 은행원이 일을 할 때, 처리한 고객의 수를 `Dispatch.global().async` 클로저 내에서 카운트(`numberOfCustomers`) 해주도록 하려고 했으나 아래와 같은 에러가 발생하였다.
+- `이유`  `Escaping closure`의 경우 구조체에서는 캡쳐가 불가능하기 때문에, 프로퍼티를 변경하려고 하면 아래와 같은 에러가 발생한다.
+
+```swift
+// 간단한 코드 예시
+struct SomeStruct {
+    var num = 0
+    
+    private mutating func test() {
+        let closure = { // Escaping closure captures mutating 'self' parameter
+            self.num += 1
+        }
+        closure()
+    }
+}
+```
+- `Escaping closure`의 경우 구조체에서는 캡쳐가 불가능하기 때문에, 프로퍼티를 변경하려고 하면 위와 같은 에러가 발생한다.
+    
+    > class와 같은 참조 타입이 아닌 Struct, enum과 같은 값타입에서는 mutating reference의 캡쳐를 허용하지 않기 때문에 self 사용이 불가능 하다.
+    > 
+- `해결` `Bank 타입`을 `클래스`로 바꿔주었다.
+
+#
+
+### "DispatchQueue는 중간에 작업을 중지시킬 수 있을까?"
+* cancel 메서드를 호출하더라도 작업이 작업 중이라면 중지시킬 수 없다.
+* 우회하는 방법이 존재하지만 GCD가 작업을 취소하거나 하는 것은 할 수는 없다.
+* Operation Queue를 사용하면 작업 중인 작업을 중지 할 수 있다. [[참고 링크]](https://developer.apple.com/documentation/foundation/operationqueue/1417849-cancelalloperations)
+
+</br>
+
+[![top](https://img.shields.io/badge/top-%23000000.svg?&amp;style=for-the-badge&amp;logo=Acclaim&amp;logoColor=white&amp;)](#-은행-창구-매니저-프로젝트)
+
+<details>
+<summary>[학습 기록 흔적]</summary>
+<div markdown="1">
+
+# 목차
+
+- [STEP 1 : 큐 타입 구현](#step-1--큐-타입-구현)
+    + [고민했던 것](#1-1-고민했던-것)
+    + [의문점](#1-2-의문점)
+    + [Trouble Shooting](#1-3-trouble-shooting)
+    + [배운 개념](#1-4-배운-개념)
+    + [PR 후 개선사항](#1-5-pr-후-개선사항)
+- [STEP 2 : 타입 구현 및 콘솔앱 구현](#step-2--타입-구현-및-콘솔앱-구현)
+    + [고민했던 것](#2-1-고민했던-것)
+    + [의문점](#2-2-의문점)
+    + [Trouble Shooting](#2-3-trouble-shooting)
+    + [배운 개념](#2-4-배운-개념)
+    + [PR 후 개선사항](#2-5-pr-후-개선사항)
+- [STEP 3 : 다중 처리](#step-3--다중-처리)
+    + [고민했던 것](#3-1-고민했던-것)
+    + [의문점](#3-2-의문점)
+    + [Trouble Shooting](#3-3-truoble-shooting)
+    + [배운 개념](#3-4-배운-개념)
+- [STEP 4 : UI 구현](#step-4--ui-구현)
+    + [고민했던 것](#4-1-고민했던-것)
+    + [의문점](#4-2-의문점)
+    + [Trouble Shooting](#4-3-trouble-shooting)
+    + [배운 개념](#4-4-배운-개념)
 
 # STEP 1 : 큐 타입 구현
 
@@ -158,7 +384,7 @@
 - QueueTests에서 `setUp()` 메소드를 활용하도록 수정
 
 
-[![top](https://img.shields.io/badge/top-%23000000.svg?&amp;style=for-the-badge&amp;logo=Acclaim&amp;logoColor=white&amp;)](#은행-창구-매니저-프로젝트)
+[![top](https://img.shields.io/badge/top-%23000000.svg?&amp;style=for-the-badge&amp;logo=Acclaim&amp;logoColor=white&amp;)](#목차-1)
 
 ---
 
@@ -191,7 +417,7 @@
 
 ## 2-3 Trouble Shooting
 
-### [1] 와일드카드 패턴으로 생성한 인스턴스의 참조 카운트
+### [1] 와일드카드 패턴으로 생성한 인스턴스의 참조 카운트 상태는?
 
 - `상황` 기존에 와일드카드 패턴으로 인스턴스 생성한 타입이 Delegate를 채택하고 있던 형태였다. 이후 순환참조 문제가 우려되어 각 타입들마다 delegate 프로퍼티에 weak 키워드를 붙여주었다.
     
@@ -261,7 +487,7 @@
 - `NumberFormatter`를 활용하였던 부분을 Double을 확장하여 개선
     - `String(format:)`을 활용하여 description을 반환하도록 구성
 
-[![top](https://img.shields.io/badge/top-%23000000.svg?&amp;style=for-the-badge&amp;logo=Acclaim&amp;logoColor=white&amp;)](#은행-창구-매니저-프로젝트)
+[![top](https://img.shields.io/badge/top-%23000000.svg?&amp;style=for-the-badge&amp;logo=Acclaim&amp;logoColor=white&amp;)](#목차-1)
 
 ---
 
@@ -350,7 +576,7 @@ struct SomeStruct {
         - 기존 로직은 은행원 수만큼 global() 큐에 Task를 만드는 방식이여서 하나의 고객 큐에 여러 스레드가 접근해 `Race Condition`이 발생할 가능성이 있음.
         - 여러 스레드가 하나의 고객 큐에 접근해도 LinkedList에서 첫 번째 요소를 반환하는 메서드를 하나의 스레드에서만 접근할 수 있도록 `SerialQueue.sync`를 활용하여 `Race Condition`을 해결
 
-[![top](https://img.shields.io/badge/top-%23000000.svg?&amp;style=for-the-badge&amp;logo=Acclaim&amp;logoColor=white&amp;)](#은행-창구-매니저-프로젝트)
+[![top](https://img.shields.io/badge/top-%23000000.svg?&amp;style=for-the-badge&amp;logo=Acclaim&amp;logoColor=white&amp;)](#목차-1)
 
 ---
 
@@ -445,4 +671,8 @@ struct SomeStruct {
 - 코드로 UI 구성(오토레이아웃)
 - 타이머 활용방법과 Run Loop
 
-[![top](https://img.shields.io/badge/top-%23000000.svg?&amp;style=for-the-badge&amp;logo=Acclaim&amp;logoColor=white&amp;)](#은행-창구-매니저-프로젝트)
+[![top](https://img.shields.io/badge/top-%23000000.svg?&amp;style=for-the-badge&amp;logo=Acclaim&amp;logoColor=white&amp;)](#목차-1)
+
+
+</div>
+</details>
